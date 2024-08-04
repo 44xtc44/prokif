@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROKIF</title>
+  <link href="css/nav.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
+  <link href="css/fonts.css" rel="stylesheet" />
+  <link rel='shortcut icon' type='image/x-icon' href='images/default_icon.svg' />
+</head>
+
+<body>
+  <div id="useProxy" data-value="false"></div>
+  <div id="divTopNav">
+    <section class="top-nav">
+      <div id="menuHome" class="toggleIcon handCursor">
+        Projekt Kraftwerksinformationen
+      </div>
+      <input id="menu-toggle" type="checkbox" />
+      <label class='menu-button-container' for="menu-toggle">
+        <div class='menu-button'></div>
+      </label>
+      <ul class="menu">
+        <li class="toggleIcon handCursor" id="liGit">GitHub Repo</li>
+        <li class="toggleIcon handCursor" id="liCountries">Countries</li>
+        <li class="toggleIcon handCursor" id="liDownload">All ~350MB</li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="row">
+    <div id="divDownloadReport" class="column500" data-isHidden="false"></div>
+    <div id="divCountryList" class="column500" data-isHidden="true"></div>
+    <div class="column500" id="divColumnOne"></div>
+    
+    <div class="column500" id="divColumnThree">
+
+      <div id="divMonitorCanvas">
+        <canvas id="canvasClock" class="mainCanvas" width=430 height=430></canvas>
+        <canvas id="canvasAntiClock" class="mainCanvas" width=430 height=430></canvas>
+      </div>
+    </div>
+
+    <div class="column500" id="divToggleSystemSettings" data-value="true">
+      <span class="handCursor" style="text-align:end;">✖</span>
+    </div>
+    <div class="column500" id="divErrorMessage"></div>
+
+    <div class="column500" id="divSystemSettings">
+
+      <div class="topMargin" id="divManualUpdate">
+        <input type="range" id="manuSlider" min="0" max="2" value="1" step="1">
+      </div>
+      <div class="topMargin" id="divFps">
+        <input id="sliderFps" type="range" min="1" max="120" value="30">
+        <span id="showSliderFps">update time</span>
+      </div>
+
+      <div id="divAutoPlay" style="text-align: left">
+        <img id="imgAutoPlay" style="vertical-align:middle" src="images/switch-on.svg" width=40px>
+        <span id="spanAutoPlay" style="vertical-align:middle" data-value="true">auto </span>
+        <span style="vertical-align:middle"><button class="fakeButton" id="btnStartDataAnimation" value="true">start</button></span>
+        <span style="vertical-align:middle"><button class="fakeButton" id="btnResetPage" value="true">refresh</button></span>
+        <span style="vertical-align:middle"><button class="fakeButton" id="btnTriCanvasPng" value="true">snapshot</button></span>
+      </div>
+
+      <div id="divBoxedPreSelectors" style="text-align: left">
+        <img id="imgIdxStepHourly" style="vertical-align:middle" src="images/switch-on.svg" width=40px>
+        <span id="spanHourly" style="vertical-align:middle" data-value="true">full hours</span>
+        <img id="imgSyncWeekday" style="vertical-align:middle" src="images/switch-on.svg" width=40px>
+        <span id="spanSyncWeekday" style="vertical-align:middle" data-value="true">sync weekday</span>
+        <img id="imgShowTrade" style="vertical-align:middle" src="images/switch-off.svg" width=40px>
+        <span id="spanShowTrade" style="vertical-align:middle" data-value="false">show trade vol</span>
+      </div>
+      <div id="divOnlineSelection" style="text-align: left">
+        <input type="number" id="inputPlotTrails" value="1" style="width: 4em;">
+        <span id="spanPlotTrails" style="vertical-align:middle" data-value="true">num data</span>
+        <input type="number" id="inputLineWidth" value="2" style="width: 4em;">
+        <span id="spanLineWidth" style="vertical-align:middle" data-value="true">line width</span>
+      </div>
+    </div>
+
+    <div class="column500" id="divColumnFour" style="background-color:#212631;">
+      
+      <div class="rowDataDisplay" id="rowDataDisplay">
+
+      </div>
+    </div>
+  </div>
+  <div class="column500" id="divColumnTwo"></div>
+  <div class="column500" id="divColumnFive"></div>
+  </div>
+
+  <div id="divTriangleAntiClock"></div>
+  <div id="divBackgroundSVG"></div>
+
+  <script src="js/index.js"></script>
+  <script src="js/triangleCalc.js"></script>
+  <script src="js/triangleDraw.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/trianglePlot.js"></script>
+  <script src="js/dataFetch.js"></script>
+  <script src="js/dataTime.js"></script>
+  <script src="js/dataIdbCreate.js"></script>
+  <script src="js/dataIdbSetGet.js"></script>
+  <script src="js/dataIdbRestoreUserState.js"></script>
+  <script src="js/dataTernaryPlotSetup.js"></script>
+  <script src="js/dataTernaryPlotCalc.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animation.js"></script>
+  <script src="js/description.js"></script>
+  <script src="js/dataPlayground.js"></script>
+  <script src="js/setEventListener.js"></script>
+  <script src="js/menuCountrySelectors.js"></script>
+  <script src="js/selectRun.js"></script>
+  <script src="js/plot.js"></script>
+  <script src="js/canvasAntiClock.js"></script>
+</body>
+
+</html>

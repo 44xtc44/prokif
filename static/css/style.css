@@ -1,0 +1,200 @@
+ * {
+  box-sizing: border-box;
+}
+body {
+  background-color: #2b2a33;
+  color: lightyellow;
+  font-family: Raleway;
+}
+
+p {
+  white-space: pre-line;
+}
+
+a:link {
+  color: hotpink;
+}
+
+a:visited {
+  color: lightyellow;
+}
+
+a:hover {
+  color: coral;
+}
+
+a:active {
+  color: blue;
+}
+
+/* Create two equal columns that floats next to each other */
+.column500 {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  background-color: #212631;
+  padding: 6px;
+  /* Should be removed. Only for demonstration; height: 300px; */
+}
+.column300 {
+  float: left;
+  width: 300px;
+  background-color: #212631;
+  padding: 6px;
+  /* Should be removed. Only for demonstration; height: 300px; */
+}
+.column200 {
+  position: relative;
+  display: inline-block;
+  margin: 20px;
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#divColumnOne {
+  height: 180px;
+}
+#divColumnThree {
+  justify-content: center;
+  height: 420px;
+}
+#divToggleSystemSettings {
+  height: 10px;
+}
+.divCountries {
+  color: lightyellow;
+  padding: 4px;
+  font-size: 110%;
+  font-weight: 500;
+  font-style: normal;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+}
+.divCountries:hover {
+  background-color: #6261cc;
+  color: white;
+}
+
+.loader {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.loader::after {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid;
+  border-color: #ff3d00 transparent;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.mainCanvas {
+  position: relative;
+  border: 0px solid #fff;
+}
+#canvasClock {
+  position: absolute;
+  display: block;
+}
+#canvasAntiClock {
+  position: relative;
+  display: block;
+}
+#divManualUpdate {
+  position: relative;
+}
+#manuSlider {
+  width: 360px;
+}
+#divManualUpdate {
+  display: none;
+}
+
+#divFps {
+  display: block;
+  z-index: 10;
+}
+
+#divWindowImage {
+  position: relative;
+}
+#divCountryList {
+  display: none;
+}
+.handCursor {
+  cursor: pointer;
+}
+
+.txtDescription {
+  margin: 6px;
+}
+.topMargin {
+  margin-top: 10px;
+}
+.bullitDescription {
+  display: block;
+  margin-top: 2px;
+  margin-left: 15px;
+}
+.spanDescriptorCol {
+  color:darkgrey;
+}
+.fakeButton {
+  background: #0066ff;
+  padding: 6px;
+  margin: 6px;
+  width: 75px;
+  height: 30px;
+  color: lightYellow;
+  font-size: 85%;
+  cursor:pointer;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
+}
+.spanNoCO2Col {
+  color: #49bbaa;
+}
+.spanLowCO2Col {
+  color: #f7b733;
+}
+.spanIsCO2Col {
+  color: #fc4a1a;
+}
+#divErrorMessage {
+  display: none;
+  background-color: #fc4a1a;
+}
+.externalLinks {
+  color: #49bbaa;
+}
+#divBoxedPreSelectors {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 0px;
+  padding-right: 2px;
+  border: 1px solid #6261cc;
+  border-radius: 2px;
+}
