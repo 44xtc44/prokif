@@ -1,12 +1,16 @@
+#!/usr/bin/env node
+
 /**
  * NPM package local express HTTP server to run the page on every browser.
+ * 
+ * The above string is used by the npm executable. Else strange errors.
  * JS can not go directly to the Fraunhofer site, like in
  * FireFox browser extension; CORS thingy.
  * JS reads a proxy value from div element (on its page) and if 'true' it must send
  * the connection url as string (to this module), to get the JSON DB file.
  * Proxy fun (this module) will return server response JSON DB file or error message (to page JS).
- * index.html and proxy.html have only one difference.
- * The browser extension version uses 'false' for useProxy.
+ * index.html and addon.html have only one difference.
+ * The browser extension "addon.html" version uses 'false' for useProxy.
  * <div id="useProxy" data-value="false"></div>
  */
 const PORT = 8001; // can use any port
@@ -19,24 +23,6 @@ const cors = require("cors");
 const { open } = require("out-url"); // Opens the URL in the default browser.
 const publicPath = path.join(__dirname, "static");
 
-// run as node package, rename index.html to use a proxy
-if (fs.existsSync(publicPath + "/indexUseProxy.html")) {
-  fs.rename(
-    publicPath + "/index.html",
-    publicPath + "/index_add_on.html", // browser add-on index.html, direct dl
-    function (err) {
-      console.log("->renamed indexUseProxy.html to index.html");
-      if (err) console.log("ERROR: " + err);
-    }
-  );
-  fs.rename(
-    publicPath + "/proxy.html",
-    publicPath + "/index.html",
-    function (err) {
-      if (err) console.log("ERROR: " + err);
-    }
-  );
-}
 app.use(cors());
 // enable middleware to parse body of Content-type: application/json
 app.use(express.json());

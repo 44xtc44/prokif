@@ -5,7 +5,7 @@
  */
 function openTab(){
     var newTab = browser.tabs.create({ 
-      url: "/static/index.html",
+      url: "/static/addon.html",
       active:true
     }).then(() => {
       browser.tabs.executeScript({
