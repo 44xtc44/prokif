@@ -1,0 +1,28 @@
+{
+  "version": "0.9.6",
+  "author": "René Horn",
+  "name": " This is for Chrome browser see <service_worker>  PROKIF Projekt Kraftwerksinformationen",
+  "short_name": "prokif",
+  "description": "Animated ternary plot diagram. View EU energy production.",
+  "manifest_version": 3,
+  "homepage_url": "https://github.com/44xtc44/prokif.git",
+  "action": {
+    "default_icon": {
+      "16": "/static/images/default_icon.svg",
+      "32": "/static/images/default_icon.svg",
+      "48": "/static/images/default_icon.svg",
+      "96": "/static/images/default_icon.svg",
+      "192": "/static/images/default_icon.svg",
+      "384": "/static/images/default_icon.svg",
+      "768": "/static/images/default_icon.svg",
+      "1536": "/static/images/default_icon.svg"
+    }
+  },
+  "background": {
+    "service_worker": "/static/js/background.js"
+  },
+  "permissions": [],
+  "host_permissions": [
+    "https://*/"
+  ]
+}
