@@ -181,10 +181,6 @@ Drag some media files into 'Device Explorer' in 'Android Studio'. Use 'mnt/sdcar
 
 Known issues
 -------------
-The snapshot feature does not work in the official browser Add-on. (temporary Add-on is ok)
-This could have to do with not having access rights in the manifest.json file
-to download files and/or open downloads. Enjoy a version update.
-
 
 Contributions
 -------------

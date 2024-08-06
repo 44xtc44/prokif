@@ -19,17 +19,17 @@ ReadTheDocs (Python based): https://prokif.readthedocs.io/en/latest/README.html
   <tbody>
     <tr>
       <td>
-        <img src="https://github.com/44xtc44/prokif/raw/dev/.github/compare_three_countries.png" alt="compare three countries" height="2828"/> 
+        <img src="https://github.com/44xtc44/prokif/blob/main/.github/compare_three_countries.png" alt="compare three countries" height="2828"/> 
       </td>
     </tr>
      <tr>
       <td>
-        <img src="https://github.com/44xtc44/prokif/raw/dev/.github/trade_2023.png" alt="trade 2023" height="676"/>
+        <img src="https://github.com/44xtc44/prokif/blob/main/.github/trade_2023.png" alt="trade 2023" height="676"/>
       </td>
     </tr>
      <tr>
       <td>
-        <img src="https://github.com/44xtc44/prokif/raw/dev/.github/trade_2024.png" alt="trade 2024" height="676"/>
+        <img src="https://github.com/44xtc44/prokif/blob/main/.github/trade_2024.png" alt="trade 2024" height="676"/>
       </td>
     </tr>
   </tbody>
@@ -181,10 +181,6 @@ Drag some media files into 'Device Explorer' in 'Android Studio'. Use 'mnt/sdcar
 
 Known issues
 ----------------
-The snapshot feature does not work in the official browser Add-on. (temporary Add-on is ok)
-This could have to do with not having access rights in the manifest.json file
-to download files and/or open downloads. Enjoy a version update.
-
 
 Contributions
 ----------------
