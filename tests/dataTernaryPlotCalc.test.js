@@ -1,5 +1,6 @@
 // https://dev.to/dstrekelj/how-to-test-classes-with-jest-jif
 // https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-nodejs
+// "test": "jest --watchAll" hangs GitHub actions 
 
 const mod = require("./../static/js/dataTernaryPlotCalc");
 // adjustPlotTrails

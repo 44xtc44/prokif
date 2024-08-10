@@ -23,7 +23,7 @@
         "url": "git+https://github.com/44xtc44/prokif.git"
     },
     "scripts": {
-        "test": "jest --watchAll"
+        "test": "jest"
     },
     "devDependencies": {
         "cors": "^2.8.5",
