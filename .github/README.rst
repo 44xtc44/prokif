@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/44xtc44/prokif/actions/workflows/node.js.yml/badge.svg)](https://github.com/44xtc44/prokif/actions/workflows/node.js.yml)
+
 PROKIF - Projekt Kraftwerksinformationen
 =========================================
 
