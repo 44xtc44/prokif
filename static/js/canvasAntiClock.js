@@ -83,11 +83,11 @@ function svg2img64(opt) {
 }
 
 function grabPngCanvas() {
-  var canvas = document.getElementById("canvasAntiClock");
+  const canvas = document.getElementById("canvasAntiClock");
   // Convert the canvas to data
-  var image = canvas.toDataURL();
+  const image = canvas.toDataURL();
   // Create a link
-  var aDownloadLink = document.createElement("a");
+  const aDownloadLink = document.createElement("a");
   // Add the name of the file to the link
   aDownloadLink.download = "ternary_plot.png";
   // Attach the data to the link

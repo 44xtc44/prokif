@@ -2,8 +2,8 @@
 "use strict";
 
 /**
- * HTML elements to show a parts of the current data set
- * and claculated data.
+ * HTML elements to an info card of selected data (online)
+ * and claculated data (we).
  */
 function createInfocards() {
   const dashBoard = document.getElementById("rowDataDisplay");
