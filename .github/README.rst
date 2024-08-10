@@ -1,4 +1,8 @@
-[![Node.js CI](https://github.com/44xtc44/prokif/actions/workflows/node.js.yml/badge.svg)](https://github.com/44xtc44/prokif/actions/workflows/node.js.yml)
+
+.. image:: https://github\.com/44xtc44/prokif/actions/workflows/node\.js\.yml/badge.svg?branch=dev
+          :target: https://github\.com/44xtc44/prokif/actions/workflows/node\.js\.yml/badge.svg?branch=dev
+          :alt: Tests
+
 
 PROKIF - Projekt Kraftwerksinformationen
 =========================================
