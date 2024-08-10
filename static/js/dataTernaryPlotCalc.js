@@ -8,7 +8,7 @@ class EnergyStorage {
     this.year = (() => {
       // year obj to populate dropdown and know when to draw download btn for this year
       const dct = {};
-      const thisYear = getYesterday().year;
+      const thisYear = new Date().getFullYear();
       for (let aYear = thisYear; aYear >= this.baseYear; aYear--) {
         dct[aYear] = aYear;
       }
@@ -24,7 +24,20 @@ class EnergyStorage {
       }
       return lst;
     })();
-    this.tColor = [...colPalette].reverse(); // must pop()
+    this.colPalette = [
+      [255, 255, 224],
+      [255, 0, 0],
+      [0, 255, 0],
+      [255, 255, 0],
+      [244, 109, 67],
+      [73, 187, 170],
+      [50, 136, 189],
+      [247, 183, 51],
+      [102, 178, 155],
+      [255, 204, 229],
+      [236, 241, 193],
+    ];
+    this.tColor = [...this.colPalette].reverse(); // must pop()
     this.plotMix = {};
     this.plotIdx = 0; // identify the latest data to draw, distinguish from trails
     this.layoutScale = 0.6; // 500 to 300, why? my old Samsung phone!
@@ -101,6 +114,9 @@ class EnergyMix {
   }
 
   update() {
+    const numTrails = parseInt(
+      document.getElementById("inputPlotTrails").value
+    );
     const isoDate = getDateParts(this.unixSeconds[this.idx]);
     let hour = isoDate.hour;
     let minute = isoDate.minute;
@@ -111,15 +127,15 @@ class EnergyMix {
     let resi = this.cData.Residual_load;
     let trade = this.cData.Cross_border_electricity_trading;
 
-    const noCO2Sum = this.prodTypeValues({
+    const noCO2Sum = prodTypeValues({
       prodType: this.noCO2,
       idx: this.idx,
     }); // calc arrays at idx, belonging to noCO2
-    const lowCO2Sum = this.prodTypeValues({
+    const lowCO2Sum = prodTypeValues({
       prodType: this.lowCO2,
       idx: this.idx,
     });
-    const isCO2Sum = this.prodTypeValues({
+    const isCO2Sum = prodTypeValues({
       prodType: this.isCO2,
       idx: this.idx,
     });
@@ -164,9 +180,14 @@ class EnergyMix {
     const intersection = this.getIntersection(); // get p(x,y) to draw on triangle, canvas
     if (intersection === null || intersection === undefined) return;
     if (this.plotPoints[this.plotIdx] === undefined)
+      // create first time
       this.plotPoints[this.plotIdx] = this.plotIdx;
-    this.storePlotPoints(intersection);
-    this.adjustPlotTrails();
+
+    this.plotPoints[this.plotIdx] = { x: intersection.x, y: intersection.y };
+    this.plotPoints = adjustPlotTrails({
+      numTrails: numTrails,
+      plotPoints: this.plotPoints,
+    });
 
     eStore.plotIdx = this.plotIdx;
     this.plotIdx += 1;
@@ -184,8 +205,8 @@ class EnergyMix {
     eStore.plotMix[this.teamNumber.num].teamNum = this.teamNumber.num;
     eStore.plotMix[this.teamNumber.num].country = this.countryCode;
     eStore.plotMix[this.teamNumber.num].tradeColor = this.isDataValid(trade)
-    ? this.tradeColors(trade[this.idx])
-    : "NaN";
+      ? this.tradeColors(trade[this.idx])
+      : "NaN";
 
     if (this.idx >= this.arrayLen) return;
   }
@@ -213,28 +234,27 @@ class EnergyMix {
     if (Number(trade[0]).toString() === "NaN") return "NaN";
     if (Number(number).toString() === "NaN") return "NaN";
 
-    const greenThree = "hsl(168, 76%, 36%)";  // 10.000
-    const greenTwo = "hsl(168, 76%,60%)";   // 5.000
-    const greenOne = "hsl(168, 76%, 76%)";   // 1.000
-    const greenZero = "hsl(168, 76%, 85%)";  // 1 - 500
+    const greenThree = "hsl(168, 76%, 36%)"; // 10.000
+    const greenTwo = "hsl(168, 76%,60%)"; // 5.000
+    const greenOne = "hsl(168, 76%, 76%)"; // 1.000
+    const greenZero = "hsl(168, 76%, 85%)"; // 1 - 500
 
-    const magentaZero = "hsl(300,100%,95%)";  // 0 - -500
+    const magentaZero = "hsl(300,100%,95%)"; // 0 - -500
     const magentaOne = "hsl(300,100%,85%)";
     const magentaTwo = "hsl(300,100%,75%)";
-    const magentaThree  = "hsl(300,100%,50%)";
+    const magentaThree = "hsl(300,100%,50%)";
 
     if (number > 1 && number < 500) return greenZero;
     if (number >= 500 && number < 1000) return greenOne;
     if (number >= 1000 && number < 5000) return greenTwo;
-    if (number >= 5000 ) return greenThree;
+    if (number >= 5000) return greenThree;
 
     if (number <= 0 && number > -500) return magentaZero;
     if (number <= -500 && number > -1000) return magentaOne;
     if (number <= -1000 && number > -5000) return magentaTwo;
-    if (number <= -5000 ) return magentaThree;
+    if (number <= -5000) return magentaThree;
 
-
-/*     const tMin = Math.min(...trade);
+    /*     const tMin = Math.min(...trade);
     const tMax = Math.max(...trade);
     const allBuy = trade.reduce((accu, val) => {
       const numVal = Number(val);
@@ -246,7 +266,6 @@ class EnergyMix {
       if (numVal > 0) accu += Math.abs(numVal);
       return accu;
     }, 0); */
-    
   }
 
   syncWeekday() {
@@ -361,19 +380,6 @@ class EnergyMix {
       standardDeviation.toFixed()
     );
     return variance;
-  }
-  prodTypeValues(options = {}) {
-    const sum = Object.keys(options.prodType).reduce((accu, prodKeyName) => {
-      // (-) means imported of this type (-2500)
-      // pdf "Electricity generation in Germany in 2023" Prof. Dr. Bruno Burger
-      // Fraunhofer ISE
-      let currentVal = options.prodType[prodKeyName][options.idx];
-      if (currentVal === null || currentVal === undefined) currentVal = 0;
-      if (currentVal <= 0) currentVal = 0;
-      accu += currentVal;
-      return accu;
-    }, 0);
-    return sum;
   }
   getOverall(noCO2Sum, lowCO2Sum, isCO2Sum) {
     const sum = noCO2Sum + lowCO2Sum + isCO2Sum;
@@ -506,30 +512,53 @@ class EnergyMix {
 
     return iSectList[0];
   }
-
-  storePlotPoints(intersection) {
-    // all prev points are (this.plotIdx - 1), (this.plotIdx - 2)
-    this.plotPoints[this.plotIdx] = { x: intersection.x, y: intersection.y };
-  }
-
-  adjustPlotTrails() {
-    // store x amount of points in the dict, to draw, del some
-    // { 0: {x,y}, 1:{x,x}, 2:{x,y} }
-    const ppLen = Object.keys(this.plotPoints).length;
-    const oKeysPp = Object.keys(this.plotPoints);
-
-    const plotTrails = parseInt(
-      document.getElementById("inputPlotTrails").value
-    );
-    if (ppLen > plotTrails) {
-      const delPoints = ppLen - plotTrails;
-      for (let i = 0; i < delPoints; i++) {
-        delete this.plotPoints[oKeysPp[i]];
-      }
-    }
-  }
 }
 
+/**
+ * Accumulate all data into one number for one of three production types.
+ * Later we set the brutto of all three to 100% and calc each proportion.
+ * { Solar: (17756) […], Wind_onshore: (17756) […], Wind_offshore: (17756) […] }
+ * @param {{Object}} options.prodType dict with belonging production rows
+ * @param {{Object}} options.idx current row index
+ * @returns {Number} result of summed rows
+ */
+function prodTypeValues(options = {}) {
+  const sum = Object.keys(options.prodType).reduce((accu, prodKeyName) => {
+    // (-) means imported of this type (-2500)
+    // pdf "Electricity generation in Germany in 2023" Prof. Dr. Bruno Burger
+    // Fraunhofer ISE
+    // console.log("ptv->", options.prodType, prodKeyName);
+    let currentVal = options.prodType[prodKeyName][options.idx];
+    if (
+      currentVal === null ||
+      currentVal === undefined ||
+      currentVal.toString() === "NaN"
+    )
+      currentVal = 0;
+    accu += currentVal;
+    return accu;
+  }, 0);
+  return sum;
+}
+
+/**
+ * Show only desired amount of data as trails.
+ * @param {Number} options.numTrails  max. amount of points in the dict
+ * @param {{Object}} options.plotPoints { 0: {x,y}, 1:{x,y}, 2:{x,y} }
+ * @returns {{Object}} dict with only the newest, reduced plot points
+ */
+function adjustPlotTrails(options = {}) {
+  const numTrails = options.numTrails;
+  const plotPoints = options.plotPoints;
+  const plotIndex = Object.keys(plotPoints);
+  if (plotIndex.length > numTrails) {
+    const delNumPoints = plotIndex.length - numTrails;
+    for (let i = 0; i < delNumPoints; i++) {
+      delete plotPoints[plotIndex[i]];
+    }
+  }
+  return plotPoints;
+}
 /* ----------------------------------------------------------------------------------- */
 
 function updateInfoCardMeta(options = {}) {
@@ -604,3 +633,4 @@ function updateInfoCardData(options = {}) {
     options.Cross_border_electricity_trading
   );
 }
+module.exports = { EnergyStorage, EnergyMix, adjustPlotTrails };
