@@ -1,11 +1,17 @@
 // description.js
 "use strict";
 
+/**
+ * Text for introduction.
+ */
 function textColumnOne() {
   const divColumnOne = document.getElementById("divColumnOne");
   divColumnOne.innerHTML = "<h1>A dynamic view on energy production</h1>";
 }
 
+/**
+ * Text HowTo section.
+ */
 function textColumnTwo() {
   const divColumnTwo = document.getElementById("divColumnTwo");
   const divHowTo = document.createElement("div");
@@ -35,6 +41,9 @@ function textColumnTwo() {
     "<p><a href='https://www.youtube.com/watch?v=I5jSOHP5VQw'>Support the project idea giver energieinfo (a brave scientist) on YouTube</a></p>";
 }
 
+/**
+ * Text more description.
+ */
 function textColumnTwoDotOne() {
   const divColumnTwo = document.getElementById("divColumnTwo");
   const divTechnical = document.createElement("div");
@@ -81,6 +90,9 @@ function textColumnTwoDotOne() {
     "<a href='https://github.com/44xtc44/prokif/issues'>GitHub PROKIF</a></span>";
 }
 
+/**
+ * Text detailed description.
+ */
 function textColumnFive() {
   const divColumnFive = document.getElementById("divColumnFive");
   divColumnFive.innerHTML =

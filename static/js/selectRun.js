@@ -1,6 +1,13 @@
 // selectRun.js
 "use strict";
 
+/**
+ * Create country instance and adjust it onto the
+ * user selected options.
+ * @param {*} options options = {}
+ * @param {*} options.cCode two char country code
+ * @param {*} options.year of the data set in DB
+ */
 function runShow(options = {}) {
   const spanHourly = document.getElementById("spanHourly");
   const isIdxHourly = spanHourly.dataset.value;
@@ -45,9 +52,12 @@ function runShow(options = {}) {
 
 /**
  * Request the DB data via browser, as extension.
+ * GET request directly to 3rd party API.
  * So no CORS problems here. NodeJS will suffer from CORS.
- * @param {*} options
- * @returns
+ * @param {Object} options options = {}
+ * @param {string} options.cCode country code
+ * @param {number} options.year of data set
+ * @returns {Promise} true or false if failed
  */
 function pickDataSet(options = {}) {
   console.log("pickDataSet->");
@@ -92,6 +102,13 @@ function pickDataSet(options = {}) {
           url: fraunhoferApi,
           endPoint: frauEP.PublicPower,
         })
+          .then((data) => {
+            return prepIndexedDbStorage({
+              country: cCode,
+              start: start,
+              data: data,
+            });
+          })
           .then((bubbleObj) => {
             const restructBubbleObj = restructData(bubbleObj);
             return restructBubbleObj;
@@ -120,6 +137,43 @@ function pickDataSet(options = {}) {
   });
 }
 
+/**
+ * Provide each instance with index step to sync if demanded.
+ * How many steps to skip to get only full hours displayed.
+ * If countryA got full hours and countryB 0,15,30,45 quarters.
+ * Find first data set with 0, count next as long not 0 again.
+ * @param {Object} options options = {}
+ * @param {instance} options.instance country instance
+ * @returns {number} of index steps to next data set to read
+ */
+function getIndexStepHourly(options = {}) {
+  const inst = options.instance;
+  let count = 0;
+  let idxStep = 0;
+
+  inst.unixSeconds.slice(0).map((timestamp, _, array) => {
+    const isoDate = getDateParts(timestamp);
+    const isoMinute = Math.floor(isoDate.minute); // get int
+    if (isoMinute === 0 && count > 0) {
+      array.splice(1); // del sliced array copy; map() runs till end of []
+      idxStep = count;
+    }
+    if (isoMinute === 0 && count === 0) count = 1; // found full
+    if (isoMinute > 0) count += 1;
+  });
+  return idxStep;
+}
+
+/**
+ * NPM package version goes here.
+ * POST request to local proxy.
+ * HTML page contains true for useProxy.
+ * '<div id="useProxy" data-value="true"></div>'
+ * @param {Object} options options = {}
+ * @param {string} options.cCode country code
+ * @param {number} options.year of data set
+ * @returns {Promise} true or false if failed
+ */
 function pickDataSetAsPackage(options = {}) {
   // npm package
   const yesterday = getYesterday();

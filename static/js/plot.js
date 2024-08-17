@@ -4,7 +4,14 @@
 /**
  * Print data points of multiple EnergyMix instances.
  * Must clear canvas before multiple draws on top.
- * @param {*} options
+ * @param {*} options options = {}
+ * @param {Object} options.cx center point x
+ * @param {Object} options.cycenter point y
+ * @param {HTMLCanvasElement} options.ctx canvas context
+ * @param {HTMLCanvasElement} options.canvas canvas 
+ * @param {Object} options.instancesData team num, color ...
+ * @param {number} options.plotIdx current number of plots
+ * 
  */
 function plotter(options = {}) {
   const cx = options.cx;

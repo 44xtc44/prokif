@@ -32,7 +32,7 @@ app.post("/fraunhofer/api", (req, res) => {
   const url = req.body.url;
   const year = req.body.year;
   const countryCode = req.body.countryCode;
-  const waitData = getData({ url: url, year: year, countryCode: countryCode });
+  const waitData = proxyGetData({ url: url, year: year, countryCode: countryCode });
   waitData.then((data) => res.send({ data: data }));
   console.log("url: ", cst.countryCodes[countryCode], year, url);
 });
@@ -45,18 +45,16 @@ open("http://localhost:" + PORT);
  * Proxy server for npm package.
  * Browser can not download data itself if page was
  * loaded by us.
- * @param options.url string url Fraunhofer Institut API
- * @param options.year string requested year
- * @param options.countryCode string two char code for country
- * @returns JSON DB data object
+ * @param {string} options.url string url Fraunhofer Institut API
+ * @param {string} options.year string requested year
+ * @param {string} options.countryCode string two char code for country
+ * @returns {JSON} API DB data object
  */
-async function getData(options = {}) {
+async function proxyGetData(options = {}) {
   try {
     const response = await fetch(options.url);
     if (!response.ok) throw "No data for ".concat(options.url); // catch
-    const str = await response.text();
-    const data = await JSON.parse(str);
-    return data;
+    return await response.json();
   } catch (error) {
     console.error(
       "->error ",

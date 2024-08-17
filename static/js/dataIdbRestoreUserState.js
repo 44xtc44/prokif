@@ -1,11 +1,14 @@
 // dataIdbRestoreUserState.js
 "use strict";
 
-function restoreUserSettings(dataResult) {
-  // restore if other than default
-  document.getElementById("sliderFps").value = dataResult.sliderFps;
+/**
+ * Restore setting if other than default.
+ * @param {Object} stateDict 
+ */
+function restoreUserSettings(stateDict) {
+  document.getElementById("sliderFps").value = stateDict.sliderFps;
 
-  if (dataResult.autoButton === false) {
+  if (stateDict.autoButton === false) {
     document.getElementById("imgAutoPlay").src = "images/switch-off.svg";
     document.getElementById("spanAutoPlay").dataset.value = "false";
     document.getElementById("divFps").style.display = "none";
@@ -16,15 +19,15 @@ function restoreUserSettings(dataResult) {
     document.getElementById("btnStartDataAnimation").innerText = "start";
   }
 
-  if (dataResult.hoursButton === false) {
+  if (stateDict.hoursButton === false) {
     document.getElementById("imgIdxStepHourly").src = "images/switch-off.svg";
     document.getElementById("spanHourly").dataset.value = "false";
   }
-  if (dataResult.syncButton === false) {
+  if (stateDict.syncButton === false) {
     document.getElementById("imgSyncWeekday").src = "images/switch-off.svg";
     document.getElementById("spanSyncWeekday").dataset.value = "false";
   }
-  if (dataResult.tradeButton === true) {
+  if (stateDict.tradeButton === true) {
     document.getElementById("imgShowTrade").src = "images/switch-on.svg";
     document.getElementById("spanShowTrade").dataset.value = "true";
     document.getElementById("divOnlineSelection").style.display = "none";

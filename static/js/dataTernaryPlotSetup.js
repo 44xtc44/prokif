@@ -15,7 +15,7 @@
  * @param countryCode second arg setter, "fr", "bg"
  * @param year of data set
  * @param get get stored object from this closure
- * @returns {String: {String: Object}} {countryCode: {year: Data}}
+ * @returns {Object} {countryCode: {year: Data}}
  * @example
  * const dataCall = datahome();  // instantiate first fun expression
  * dataCall.set(data, "fr", "2023")
@@ -46,10 +46,10 @@ const dataCall = datahome();
  * [noCO2] pv wind;
  * [lowCO2] nukes water bio geo;
  * [isCO2] coal oil gas
- * @param options.countryCode country
- * @param options.year year
- * @param options.call fun call result of getting data out of the closure
- * @returns {trinity: Data, timestamps: Number, countryCode: String}
+ * @param {string} options.countryCode country
+ * @param {number} options.year year
+ * @param {function} options.call fun call result of getting data out of the closure
+ * @returns {Object} {trinity: Data, timestamps: Number, countryCode: String}
  * @example
  * const trinity = createTrinityFromClosure({
  *   countryCode: "de",
@@ -117,6 +117,12 @@ function createTrinityFromClosure(options = {}) {
   };
 }
 
+/**
+ * Set manual slider max. value.
+ * Problem is to filter out quarter hours, if demanded.
+ * Means there are much more data rows than hourly.
+ * Try to display synced days and hours for different countries. 
+ */
 function buildManualSliderFromMax() {
   let arrayLen = getMaxDataSet();
   const spanHourly = document.getElementById("spanHourly");
@@ -125,18 +131,23 @@ function buildManualSliderFromMax() {
   createManualSlider(arrayLen);
 }
 
+/**
+ * Hourly switch is set.
+ * @returns {number} of lowest row count of a country data set
+ */
 function getMinDataSet() {
-  // if not hourly
   let minLen = [];
   Object.keys(frameControl).map((keyName) => {
     minLen.push(frameControl[keyName].instance.unixSeconds.length);
   });
   return Math.min(...minLen);
 }
-
+/**
+ * Hourly is not set. Display quarter hours possible.
+ * frameControl in animation.js hosts the instances that calcs and draws
+ * @returns {number} of biggest row count of a country data set
+ */
 function getMaxDataSet() {
-  // if not hourly
-  // 'frameControl' in animation.js hosts the instances that calcs and draws
   let maxLen = 0;
   Object.keys(frameControl).map((keyName) => {
     const len = frameControl[keyName].instance.unixSeconds.length;
@@ -146,12 +157,15 @@ function getMaxDataSet() {
 }
 
 /**
- *
- * @param {Number} maxLen
+ * Set max value and event listener to manually
+ * move through the data sets. 
+ * Problem seems to be step keyword related.
+ * Jumps over some data sets. Seen if data num is set high.
+ * @param {number} maxLen for the slider
  */
 function createManualSlider(maxLen) {
   manuSlider.setAttribute("max", maxLen - 1);
-  //
+
   manuSlider.addEventListener("input", () => {
     Object.keys(frameControl).map((keyName) => {
       // all instances must wrtite coords before printing once, to eStorage.plotMix
@@ -171,25 +185,4 @@ function createManualSlider(maxLen) {
       canvas: eStore.canvasAntiClock,
     });
   });
-}
-
-function getIndexStepHourly(options = {}) {
-  // how many steps to skip to get only full hours displayed
-  // to sync display countryA full hours and countryB 0,15,30,45
-  // find first data set with 0, count next as long not 0 again
-  const inst = options.instance;
-  let count = 0;
-  let idxStep = 0;
-
-  inst.unixSeconds.slice(0).map((timestamp, _, array) => {
-    const isoDate = getDateParts(timestamp);
-    const isoMinute = Math.floor(isoDate.minute); // get int
-    if (isoMinute === 0 && count > 0) {
-      array.splice(1); // del sliced array copy; map() runs till end of []
-      idxStep = count;
-    }
-    if (isoMinute === 0 && count === 0) count = 1; // found full
-    if (isoMinute > 0) count += 1;
-  });
-  return idxStep;
 }

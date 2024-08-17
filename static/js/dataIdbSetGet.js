@@ -3,13 +3,13 @@
 
 var testLen = 0;
 /**
- * KeyPath based ('id').
- * @param options.dbName  dbName
+ * Write data to IndexedDB.
+ * @param options.dbName dbName
  * @param options.dbVersion dbVersion
  * @param options.objectStoreName objectStoreName
  * @param options.data dictionary with data row to update, whole row
  * @param options.updFields dictionary with data, selective update fields
- * @returns {Promise.resolve, Promise.reject}
+ * @returns {Promise} true or error object 
  * @example
  * setIdbValue({
  *   // db transaction, update if country is done
