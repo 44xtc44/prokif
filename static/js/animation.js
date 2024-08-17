@@ -1,7 +1,9 @@
 // animation.js
 "use strict";
 
-window.animationFrameCount = 0;
+/* THE one and only animation driver module. */
+
+window.animationFrameCount = 0;  // Interpreter counter
 const frameControl = {}; // hosts instances of EnergyMix class
 
 /**
@@ -15,12 +17,22 @@ function animationMain() {
   animationFrameCount = requestAnimationFrame(animationMain);
 }
 
+/**
+ * Start the few seconds intro animation.
+ */
 function runIntro() {
   if (!animateTriangle.isDrawn) {
     if (animationFrameCount % 2 === 0) animateTriangle.drawAllEdges();
   }
 }
 
+/**
+ * Trigger all instance.update()s.
+ * Display next row of stored data for all instances
+ * in one shot, plotter.
+ * Adjust display frequency real time, slider.
+ * Frames are browser frames, usually 60fps.
+ */
 function runFrames() {
   const firstKey = Object.keys(frameControl);
   if (firstKey.length === 0) return;

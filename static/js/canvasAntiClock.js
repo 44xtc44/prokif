@@ -1,8 +1,33 @@
 // canvasAntiClock.js
 "use strict";
+
 /**
- *
- * @param {*} options
+ * Eventually draw the SVG triangle to canvas.
+ * @param {*} options options = {}
+ * @param {string} options.injectorId div id
+ * @param {string} options.url local path to SVG
+ */
+function createTernaryPlot(options = {}) {
+  fetchAnimationSVG({
+    injectorId: options.injectorId,
+    url: options.url,
+  }).then((svgDomElement) => {
+    drawSvgCanvas({
+      svgDomElement: svgDomElement,
+      scale: options.scale,
+      canvas: options.canvas,
+    });
+  });
+}
+
+/**
+ * Load an SVG image and inject it into a div.
+ * Now we can access all of the internal paths and groups.
+ * This is not fully used in this app. Else cartoon style animation.
+ * @param {Object} options options = {}
+ * @param {string} options.injectorId div id
+ * @param {string} options.url local path to SVG
+ * @returns {Promise} the injected SVG 'text' as DOM elem with an id
  * @example
  * fetchAnimationSVG({
  *  injectorId: "divTriangleAntiClock",
@@ -27,9 +52,11 @@ function fetchAnimationSVG(options = {}) {
 }
 
 /**
- *
- * @param {*} options
- * @returns
+ * SVG image converted to base64 drawn on canvas.
+ * @param {*} options options = {}
+ * @param {*} options.scale to adapt to device display size
+ * @param {*} options.canvas named display area
+ * @returns {{Object}} choosen canvas and context
  */
 async function drawSvgCanvas(options = {}) {
   const svg = options.svgDomElement;
@@ -37,7 +64,7 @@ async function drawSvgCanvas(options = {}) {
 
   const canvas = options.canvas;
   const ctx = canvas.getContext("2d");
-  const base64Img = await svg2img64({ svg: svg });
+  const base64Img = await svg2img64(svg);
 
   const img = new Image();
   img.onload = () => {
@@ -70,10 +97,11 @@ async function drawSvgCanvas(options = {}) {
  * SVGtoCanvas class, on the other hand, can edit the paths without the need to convert to base64.
  * SVGtoCanvas direct draw. But fails to paint blur and gradients.
  * GhettoRecorder has Python base64 conversion for background image in browser.
+ * @param {SVGImageElement} svg
+ * @returns {Promise} base64 image as background for the calculated triangle.
  */
-function svg2img64(opt) {
+function svg2img64(svg) {
   return new Promise((resolve) => {
-    const svg = opt.svg;
     const xml = new XMLSerializer().serializeToString(svg);
     const svg64 = btoa(unescape(encodeURIComponent(xml))); // utf8 , other use btoa(xml);
     const head = "data:image/svg+xml;base64,";
@@ -82,6 +110,9 @@ function svg2img64(opt) {
   });
 }
 
+/**
+ * Print a translucent image to the user download folder.
+ */
 function grabPngCanvas() {
   const canvas = document.getElementById("canvasAntiClock");
   // Convert the canvas to data
@@ -95,20 +126,11 @@ function grabPngCanvas() {
   // Get the code to click the download link
   aDownloadLink.click();
 }
-
-function createTernaryPlot(options = {}) {
-  fetchAnimationSVG({
-    injectorId: options.injectorId,
-    url: options.url,
-  }).then((svgDomElement) => {
-    drawSvgCanvas({
-      svgDomElement: svgDomElement,
-      scale: options.scale,
-      canvas: options.canvas,
-    });
-  });
-}
-
+/**
+ * Adapt screen size to different devices.
+ * @param {Object} options options = {}
+ * @param {boolean} options.fromLayoutLarge y/n
+ */
 function resizePage(options = {}) {
   // divColumnThree  canvasAntiClock canvasClock
   const layoutBig = eStore.canvasClassAntiClockLarge;
@@ -157,7 +179,6 @@ function resizePage(options = {}) {
       canvas: document.getElementById("canvasAntiClock"),
     });
   }
-
   reseizeTriangle({
     id: "ternaryPlotAntiClock", // triangle only visible in dev mode
     // boundaries for the diagram intersection points
@@ -167,6 +188,9 @@ function resizePage(options = {}) {
   });
 }
 
+/**
+ * Dispatcher small, big screen.
+ */
 function updateScreen() {
   if (window.innerWidth < 600) {
     resizePage({ fromLayoutLarge: true });

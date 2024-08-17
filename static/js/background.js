@@ -1,7 +1,7 @@
 // background.js
 "use strict";
 /**
- * Can load either "background" or "content_scripts" by pressing button
+ * Loader of the Browser Add-on.
  * https://stackoverflow.com/questions/69296754/chrome-extension-action-onclicked
  * Called when the user clicks on the browser action.
  */

@@ -2,7 +2,8 @@
 "use strict";
 
 /**
- *
+ * Country selector list.
+ * Enables download data sets from JSON API. 
  */
 function createCountrySelectors() {
   // countryCodes

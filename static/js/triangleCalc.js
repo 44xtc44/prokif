@@ -1,11 +1,19 @@
 // triangleCalc.js
 "use strict";
 
+/**
+ * Have to reconstruct the triangle if screen resizes.
+ * @param {string} options.id triangle visible in dev mode drawTriangle()
+ * @param {number} options.side boundaries of the diagram spots/intersection points
+ * @param {number} options.precision for option drawing show, how many parts one side consists of
+ * @param {boolean} options.clockwise clock or antiClock readable ternary plot; where spots are drawn
+ * @returns {Object} dict with description where to draw and how big
+ */
 function reseizeTriangle(options = {}) {
-  const id = options.id; // triangle visible in dev mode drawTriangle()
-  const side = options.side; // boundaries for the diagram spots/intersection points
-  const precision = options.precision; // for option drawing show, how many parts one side consists of
-  const clockwise = options.clockwise; // clock or antiClock readable ternary plot; where spots are drawn
+  const id = options.id;
+  const side = options.side;
+  const precision = options.precision;
+  const clockwise = options.clockwise;
 
   const triangle = constructTriangle({
     id: id,
@@ -44,7 +52,7 @@ function reseizeTriangle(options = {}) {
  * @param options.id name of triangle
  * @param options.side triangle side len in pixel
  * @param options.precision amount of side segments (1/precision len)
- * @returns {{}} object
+ * @returns {Object} triangle data
  */
 function constructTriangle(options = {}) {
   const id = options.id;
@@ -75,7 +83,7 @@ function constructTriangle(options = {}) {
  * @param {Number} side len of triangle side
  * @param {{}} coords triangle object describes (x,y) coords/points for A,B,C edges
  * @param {Number} precision 100 means, 'side' is split in 100 segments/points; 1.000 -> 1.000
- * @returns {{clock:{percent: {x:Number,y:Number},{}}}} or same with "antiClock" key
+ * @returns {Object} or same with "antiClock" key
  * to prepare a diagram with rulers in opposite direction %, clockwise diagram reading or not
  * @see ptr (global) default input object for triangle coords param
  * {antiClock:{{1: {x: 1,2,y:3,6}}, 2: {x: 4,3,y:5,1}}} use percent scale -> ruler points
@@ -126,10 +134,12 @@ function getCoords(options = {}) {
  * (30%,20%,50%) (100%,0%,0%) (20%,80%,0%) if(oneOfThem is 0 || oneOfThem is 100)
  *
  * No accumulation of input array.
- * @param options.origin start {x: Number, y: Number} triangle edge point
- * @param options.target target {x: Number, y: Number} triangle edge point
- * @param options.precision of 'ruler marks', amount of points on the ruler
- * @returns {{Number:{x:Number,y:Number}, ...}}; outer {} is %, inner {} is coords
+ * @param {Object} options options = {}
+ * @param {Object} options.origin {x: Number, y: Number} triangle edge point
+ * @param {Object} options.target {x: Number, y: Number} triangle edge point
+ * @param {number} options.percent precision of 'ruler marks', amount of points on the ruler
+
+ * @returns {Object}; outer {} is %, inner {} is coords
  */
 function getPoints(options = {}) {
   const precision = options.p;
@@ -149,31 +159,12 @@ function getPoints(options = {}) {
 }
 
 /**
- * Imaginary straight line between p1(x1,y1) and p2(x2,y2)
- * is cut at percent x.
- *
- * @param {Number} x1 p1 x origin
- * @param {Number} y1 p1 y origin
- * @param {Number} x2 p2 x destination
- * @param {Number} y2 p2 y destination
- * @param {Number} percentage between 0 and 1, where to cut the line
- * @returns {{x: Number, y: Number}} intersection at percent
- */
-function getPositionAlongTheLine(x1, y1, x2, y2, percentage) {
-  return {
-    x: x1 * (1.0 - percentage) + x2 * percentage,
-    y: y1 * (1.0 - percentage) + y2 * percentage,
-  };
-}
-
-/**
- * Called numerous times to create the side rulers (points objects) for the diagram.
+ * Create the side rulers (points objects) for the diagram.
  * Wrap the fun request with dependency injector to keep the reading cleaner.
- *
- * @param options.origin start {x: Number, y: Number} triangle edge point
- * @param options.target target {x: Number, y: Number} triangle edge point
- * @param options.percent precision of 'ruler marks', amount of points on the ruler
- * @returns {{x: Number, y: Number}} target coords for next ruler mark
+ * @param {Object} options.origin {x: Number, y: Number} triangle edge point
+ * @param {Object} options.target {x: Number, y: Number} triangle edge point
+ * @param {number} options.percent precision of 'ruler marks', amount of points on the ruler
+ * @returns {Object}} target coords for next ruler mark
  */
 function createSideRuler(options = {}) {
   const stopPoint = getPositionAlongTheLine(

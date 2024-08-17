@@ -18,8 +18,13 @@
  * Create the objectStore and DB indicies for a named database.
  * Also a template for the upgrade fun.
  * Go 'DBOpenRequest.onsuccess' not 'DBOpenRequest.onupgradeneeded'.
- * @param {} options
- * @returns
+ * @param {Object} options = {}
+ * @param {string} options.dbName 2 char country code
+ * @param {string} options.dbVersion DB schema
+ * @param {string} options.objectStoreName DB table
+ * @param {string} options.primaryKey table row identifier column
+ * @param {string} options.indexNames not used here but, search key: or val
+ * @returns {Promise} true, done or error
  */
 function initIndexDb(options = {}) {
   // Promise to schedule app state update fun.
@@ -61,6 +66,9 @@ function initIndexDb(options = {}) {
   });
 }
 
+/**
+ * Just create a DB, not add any data.
+ */
 function createCountryDB() {
   initIndexDb({
     // LOG DB
@@ -87,6 +95,10 @@ function createCountryDB() {
   });
 }
 
+/**
+ * App state restrore after reload or page closed.
+ * Create DB if not existing, init restore of settings.
+ */
 function createUserSettingsDB() {
   const dbName = "prokif_user_settings";
   const dbVersion = 1;
@@ -123,7 +135,7 @@ function createUserSettingsDB() {
       objectStoreName: objectStoreName,
       id: firstRowName,
     })
-      .then((dataResult) => restoreUserSettings(dataResult))
+      .then((stateDict) => restoreUserSettings(stateDict))
       .catch(() => {
         // no data yet
         setIdbValue({

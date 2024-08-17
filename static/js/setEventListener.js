@@ -21,6 +21,9 @@ function setPageEventHandler() {
   });
 }
 
+/**
+ * Top nav menu.
+ */
 function setMenuEventHandler() {
   const liCountries = document.getElementById("liCountries");
   const liDownload = document.getElementById("liDownload");
@@ -76,6 +79,9 @@ function setMenuEventHandler() {
   });
 }
 
+/**
+ * Buttons event handler.
+ */
 function setBtnEventHandler() {
   const btnStartDataAnimation = document.getElementById(
     "btnStartDataAnimation"
@@ -102,6 +108,9 @@ function setBtnEventHandler() {
   });
 }
 
+/**
+ * Slider to change update time to show next data set.
+ */
 function setRangeFpsEventHandler() {
   const sliderFps = document.getElementById("sliderFps");
   const showSliderFps = document.getElementById("showSliderFps");
@@ -117,6 +126,9 @@ function setRangeFpsEventHandler() {
   });
 }
 
+/**
+ * All checkboxes.
+ */
 function setCheckboxEventHandler() {
   const imgAutoPlay = document.getElementById("imgAutoPlay");
   const imgIdxStepHourly = document.getElementById("imgIdxStepHourly");
