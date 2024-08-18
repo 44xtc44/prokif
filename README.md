@@ -169,11 +169,11 @@ process to enable PlayStore to pull FireFox Nightly, into every AVD.
 
 Open a terminal in the root of the repo clone, to load the Add-on into the AVD via USB.
 
-    @PlaylistBooster$ adb devices -l
+    @lab42$ adb devices -l
     List of devices attached
     emulator-5554   offline
 
-    @PlaylistBooster$ web-ext run --target=firefox-android --android-device emulator-5554 --firefox-apk org.mozilla.fenix
+    @lab42$ web-ext run --target=firefox-android --android-device emulator-5554 --firefox-apk org.mozilla.fenix
 
 The AVD and FireFox Nightly must be USB enabled (Dev mode) then.
 

@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 # sphinx-apidoc -f -o source/ ../static/
 # make html
 
-project = 'PlaylistBooster'
+project = 'prokif'
 copyright = 'Apache 2.0 License (2024)'
 author = 'René Horn'
 release = '1.0'
