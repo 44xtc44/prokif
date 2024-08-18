@@ -2,8 +2,8 @@
 
 ## Overview
 
-This repository shows the source code of a Web application. A ternary plot diagram fullstack software written in JavaScript. 
-It can be used as analysis tool to investigate some aspects of energy production data within Europe.
+JS Fullstack. This repository shows the source code of a ternary plot diagram analysis tool. 
+Compare german fidget current (Zappelstrom) over the years and with other countries.
 Data sets are pulled from german Fraunhofer Institut Api https://api.energy-charts.info and stored locally
 in the browsers inbuild IndexedDB. Visit the Fraunhofer Institut web site https://energy-charts.info/
 
