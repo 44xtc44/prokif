@@ -63,11 +63,11 @@ Install the latest Node.js interpreter software so you can run JavaScript direct
 
 Install this package *global* to get the executable ``prokif``.
 ```console
-foo@bar:~$ npm install prokif -g
+foobar:~$ npm install prokif -g
 ```
 Install this package *global* from the developer source repository on GitHub.
 ```console
-foo@bar:~$ npm install git+https://github.com/44xtc44/prokif.git -g
+foobar:~$ npm install git+https://github.com/44xtc44/prokif.git -g
 ```
 Why install with global flag?
 The npm manager will create a binary file in its directory for your OS which automatically
@@ -92,7 +92,7 @@ This server component is not needed nor used in the Browser Add-on.
 Start the package auto executable.
 
 ```console
-foo@bar:~$ prokif
+foobar:~$ prokif
 server on 8001
 
 ```
@@ -101,8 +101,8 @@ The *local* start from inside the package directory.
 The download connection will show an error if no data is received.
 
 ```console
-foo@bar:~$ cd node_modules/prokif
-foo@bar:~$ node index.js
+foobar:~$ cd node_modules/prokif
+foobar:~$ node index.js
 server on 8001
 url:  Denmark 2015 https://api.energy-charts.info/public_power?country=dk&start=2015-01-01&end=2015-12-31
 url:  Azerbaijan 2015 https://api.energy-charts.info/public_power?country=az&start=2015-01-01&end=2015-12-31
@@ -112,11 +112,11 @@ url:  Azerbaijan 2015 https://api.energy-charts.info/public_power?country=az&sta
 Uninstall
 ------------
 ```console
-foo@bar:~$ npm uninstall prokif -g
+foobar:~$ npm uninstall prokif -g
 ```
 check the location and removal
 ```console
-foo@bar:~$ npm list -g
+foobar:~$ npm list -g
 ```
 
 # How it works
@@ -145,7 +145,12 @@ Open an issue at the GitHub repo to request more granually display for *all* cou
 HowTo PC
 --------
 
-Clone the repo from GitHub. 
+Clone repo from GitHub. Go to it,
+install node.js and activate npm, red from package.json. 
+
+```console
+foobar:~$ npm install
+```
 
 FireFox 'about:debugging', and 'this FireFox' select a new temporary Add-on.
 
@@ -154,7 +159,12 @@ Open the manifest.json in the cloned folder and then start the Add-on from the p
 HowTo Android
 ----------------
 
-Clone the repo from GitHub.
+Clone repo from GitHub. Go to it,
+install node.js and activate npm, red from package.json. 
+
+```console
+foobar:~$ npm install
+```
 
 Install 'web-ext' "https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/".
 

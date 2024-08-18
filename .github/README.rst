@@ -69,12 +69,12 @@ Install the latest Node.js interpreter software so you can run JavaScript direct
 
 Install this package *global* to get the executable ``prokif``.
 
-    foo@bar:~$ npm install prokif -g
+    foobar:~$ npm install prokif -g
 
 Install this package *global* from the developer source repository on GitHub.
 
 
-    foo@bar:~$ npm install git+https://github.com/44xtc44/prokif.git -g
+    foobar:~$ npm install git+https://github.com/44xtc44/prokif.git -g
 
 Why install with global flag?
 The npm manager will create a binary file in its directory for your OS which automatically
@@ -98,7 +98,7 @@ This server component is not needed nor used in the Browser Add-on.
 
 Start the package auto executable.
 
-    foo@bar:~$ prokif
+    foobar:~$ prokif
 
     server on 8001
 
@@ -106,8 +106,8 @@ Start the package auto executable.
 The *local* start from inside the package directory. 
 Scenario; download connection shows an error, no data is received.
 
-    foo@bar:~$ cd node_modules/prokif
-    foo@bar:~$ node index.js
+    foobar:~$ cd node_modules/prokif
+    foobar:~$ node index.js
 
     server on 8001
     
@@ -119,11 +119,11 @@ Scenario; download connection shows an error, no data is received.
 Uninstall
 ------------
 
-    foo@bar:~$ npm uninstall prokif -g
+    foobar:~$ npm uninstall prokif -g
 
 check the location and removal
 
-    foo@bar:~$ npm list -g
+    foobar:~$ npm list -g
 
 
 How it works
@@ -152,7 +152,10 @@ Open an issue at the GitHub repo to request more granually display for *all* cou
 
 HowTo PC
 --------
-Clone the repo from GitHub. 
+Clone repo from GitHub. Go to it,
+install node.js and activate npm, red from package.json. 
+
+    foobar:~$ npm install
 
 FireFox 'about:debugging', and 'this FireFox' select a new temporary Add-on.
 
@@ -160,7 +163,10 @@ Open the manifest.json in the cloned folder and then start the Add-on from the p
 
 HowTo Android
 --------------
-Clone the repo from GitHub.
+Clone repo from GitHub. Go to it,
+install node.js and activate npm, red from package.json. 
+
+    foobar:~$ npm install
 
 Install 'web-ext' "https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/".
 
@@ -171,7 +177,7 @@ Search "Firefox Nightly for Developers". If you find 'APKmirror' save, go there.
 process to enable PlayStore to pull FireFox Nightly, into every AVD.
 
 
-> **_NOTE:_** Deinstall FireFox 'regular' version, if any.
+**NOTE:** Deinstall FireFox 'regular' version, if any.
 
 Open a terminal in the root of the repo clone, to load the Add-on into the AVD via USB.
 

@@ -27,12 +27,11 @@ canvasAntiClock.js
 dataFetch.js
 -----------------------
 .. js:autofunction:: pullStoreJson
-.. js:autofunction:: getDataFromProxy
-.. js:autofunction:: getDataNoProxy
+.. js:autofunction:: getApiData
 .. js:autofunction:: getData
 .. js:autofunction:: postData
 .. js:autofunction:: prepIndexedDbStorage
-.. js:autofunction:: restructData
+.. js:autofunction:: adaptDataColHeader
 .. js:autofunction:: updateIndexDbCountry
 
 dataIdbCreate.js
@@ -105,6 +104,9 @@ index.js
 menuCountrySelectors.js
 ----------------------------
 .. js:autofunction:: createCountrySelectors
+.. js:autofunction:: createSubLabel
+.. js:autofunction:: subLabelAddListenerPullData
+.. js:autofunction:: parentLabelAddListenerFolded
 
 plot.js
 ----------------------------
