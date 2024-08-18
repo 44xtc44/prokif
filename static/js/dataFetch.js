@@ -10,121 +10,79 @@
 function pullStoreJson() {
   const parentId = "divDownloadReport";
   const year = eStore.year;
+  const useProxy = document.getElementById("useProxy").dataset.value;
   Object.keys(year).map((yNum) => {
     Object.keys(countryCodes).forEach((country) => {
-      const useProxy = document.getElementById("useProxy").dataset.value;
-      console.log("useProxy->", useProxy);
-      if (useProxy === "true") {
-        getDataFromProxy({
-          country: country,
-          year: year,
-          yNum: yNum,
-          parentId: parentId,
-        });
-      } else {
-        getDataNoProxy({
-          country: country,
-          year: year,
-          yNum: yNum,
-          parentId: parentId,
-        });
-      }
+      getApiData({
+        useProxy: useProxy,
+        country: country,
+        year: year,
+        yNum: yNum,
+        parentId: parentId,
+      });
     });
   });
 }
 
 /**
- * Pull via proxy, node.js npm packet.
- * POST the URL string to the proxy.
+ * Pull via proxy, node.js npm packet. Then,
+ * POST the URL string to the node.js express proxy.
+ * Pull via Browser exension. Then,
+ * GET request directly to API.
+ * @param {Object} options options = {}
+ * @param {boolean} options.useProxy true or false
+ * @param {string} options.country for JSON data set
  * @param {string} options.yNum date data set
  * @param {Object} options.year dict with strings of years
  * @param {string} options.parentId div elem to attach log div
- * @param {string} options.country for JSON data set
  */
-function getDataFromProxy(options = {}) {
-  const country = options.country;
-  const yNum = options.yNum;
-  const year = options.year;
-  const parentId = options.parentId;
-  const start = year[yNum] + dateForm.yearStart;
-  const end = year[yNum] + dateForm.yearEnd;
-  postData({
-    country: country,
-    start: start,
-    end: end,
+function getApiData(options = {}) {
+  const o = options;
+  const useProxy = o.useProxy;
+  const urlObj = {
+    country: o.country,
+    yNum: o.yNum,
+    year: o.year,
+    parentId: o.parentId,
+    start: o.year[o.yNum] + dateForm.yearStart,
+    end: o.year[o.yNum] + dateForm.yearEnd,
     url: fraunhoferApi,
     endPoint: frauEP.PublicPower,
-  })
-  .then((data) => {
-    return prepIndexedDbStorage({ country: country, start: start, data: data });
-  })
+  };
+  let askUrl = getData(urlObj);
+  if (useProxy === "true") askUrl = postData(urlObj);
+  askUrl
+    .then((data) => {
+      if (data === undefined)
+        throw " No data. ".concat(countryCodes[urlObj.country]);
+      return prepIndexedDbStorage({
+        country: urlObj.country,
+        start: urlObj.start,
+        data: data,
+      });
+    })
     .then((bubbleObj) => {
-      const restructBubbleObj = restructData(bubbleObj);
-      return restructBubbleObj;
+      return adaptDataColHeader(bubbleObj);
     })
     .then((bubbleObj) => {
       updateIndexDbCountry(bubbleObj);
       appendDiv({
-        parentId: document.getElementById(parentId),
-        childId: "report_".concat(country, yNum),
-        innerText: "OK_".concat(countryCodes[country], " ", yNum),
+        parentId: document.getElementById(urlObj.parentId),
+        childId: "report_".concat(urlObj.country, urlObj.yNum),
+        innerText: "OK_".concat(countryCodes[urlObj.country], " ", urlObj.yNum),
         elemClass: "dlReport",
       });
       return bubbleObj;
     })
     .catch(() => {
       appendDiv({
-        parentId: document.getElementById(parentId),
-        childId: "report_".concat(country, yNum),
-        innerText: "Fail_".concat(countryCodes[country], " ", yNum),
-        elemClass: "dlReport",
-      });
-    });
-}
-
-/**
- * Pull data from Browser extension, no proxy needed like npm packet.
- * @param {string} options.yNum date data set
- * @param {{Object}} options.year dict with strings of years
- * @param {string} options.parentId div elem to attach log div
- * @param {string} options.country for JSON data set
- */
-function getDataNoProxy(options = {}) {
-  const country = options.country;
-  const yNum = options.yNum;
-  const year = options.year;
-  const parentId = options.parentId;
-  const start = year[yNum] + dateForm.yearStart;
-  const end = year[yNum] + dateForm.yearEnd;
-  return getData({
-    country: country,
-    start: start,
-    end: end,
-    url: fraunhoferApi,
-    endPoint: frauEP.PublicPower,
-  })
-    .then((data) => {
-      return prepIndexedDbStorage({ country: country, start: start, data: data });
-    })
-    .then((bubbleObj) => {
-      const restructBubbleObj = restructData(bubbleObj);
-      return restructBubbleObj;
-    })
-    .then((bubbleObj) => {
-      updateIndexDbCountry(bubbleObj);
-      appendDiv({
-        parentId: document.getElementById(parentId),
-        childId: "report_".concat(country, yNum),
-        innerText: "OK_".concat(countryCodes[country], " ", yNum),
-        elemClass: "dlReport",
-      });
-      return bubbleObj;
-    })
-    .catch((error) => {
-      appendDiv({
-        parentId: document.getElementById(parentId),
-        childId: "report_".concat(country, yNum),
-        innerText: "Fail_".concat(country, yNum, error),
+        parentId: document.getElementById(urlObj.parentId),
+        childId: "report_".concat(urlObj.country, urlObj.yNum),
+        innerText: "Fail_".concat(
+          countryCodes[urlObj.country],
+          " ",
+          urlObj.yNum
+        ),
         elemClass: "dlReport",
       });
     });
@@ -153,7 +111,7 @@ async function getData(options = {}) {
     ),
     {
       method: "GET",
-      mode: "cors", // npm package needs proxy in manifest or package.json, check!
+      mode: "cors",
     }
   );
   if (response.ok) {
@@ -203,9 +161,9 @@ async function postData(options = {}) {
 
 /**
  * Construct the object for IndexDb feed.
- * @param {string} options.country country code 
- * @param {string} options.start start date in DB 
- * @param {string} options.data JSON data from API 
+ * @param {string} options.country country code
+ * @param {string} options.start start date in DB
+ * @param {string} options.data JSON data from API
  * @returns {Object} JSON data and meta data
  */
 function prepIndexedDbStorage(options = {}) {
@@ -222,7 +180,7 @@ function prepIndexedDbStorage(options = {}) {
  * @param {Object} bubbleObj JSON and meta data
  * @returns {Object} JSON data and meta data
  */
-function restructData(bubbleObj) {
+function adaptDataColHeader(bubbleObj) {
   // get rid of obj.name and obj.data key names (original db table col remnants)
   const prodTypes = bubbleObj.json.production_types.reduce((acc, type) => {
     // {Biomass: [1,2,3], Hydro: [1,2,3], Fossil_gas:...}
@@ -254,4 +212,4 @@ function updateIndexDbCountry(bubbleObj) {
   });
 }
 
-module.exports = { getData };  // export for jest tests
+module.exports = { getData }; // export for jest tests

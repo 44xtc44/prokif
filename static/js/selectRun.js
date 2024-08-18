@@ -4,9 +4,9 @@
 /**
  * Create country instance and adjust it onto the
  * user selected options.
- * @param {*} options options = {}
- * @param {*} options.cCode two char country code
- * @param {*} options.year of the data set in DB
+ * @param {Object} options options = {}
+ * @param {string} options.cCode two char country code
+ * @param {number} options.year of the data set in DB
  */
 function runShow(options = {}) {
   const spanHourly = document.getElementById("spanHourly");
@@ -54,13 +54,13 @@ function runShow(options = {}) {
  * Request the DB data via browser, as extension.
  * GET request directly to 3rd party API.
  * So no CORS problems here. NodeJS will suffer from CORS.
+ * Check our local DB if data already exists.
  * @param {Object} options options = {}
  * @param {string} options.cCode country code
  * @param {number} options.year of data set
  * @returns {Promise} true or false if failed
  */
 function pickDataSet(options = {}) {
-  console.log("pickDataSet->");
   // pull data set and store it in closure, cache 'dataCall.set'.
   const yesterday = getYesterday();
   const yDay = yesterday.day;
@@ -75,8 +75,6 @@ function pickDataSet(options = {}) {
 
   return new Promise((resolve, reject) => {
     getIdbValue({
-      // GET possible not necessary, only if?
-      // get data local if available
       dbName: cCode,
       dbVersion: 1,
       objectStoreName: "production_types",
@@ -103,6 +101,8 @@ function pickDataSet(options = {}) {
           endPoint: frauEP.PublicPower,
         })
           .then((data) => {
+            const unAvailable = undefined;
+            if (data === unAvailable) throw " No data. ".concat(countryCodes[country])
             return prepIndexedDbStorage({
               country: cCode,
               start: start,
@@ -110,8 +110,7 @@ function pickDataSet(options = {}) {
             });
           })
           .then((bubbleObj) => {
-            const restructBubbleObj = restructData(bubbleObj);
-            return restructBubbleObj;
+            return adaptDataColHeader(bubbleObj);
           })
           .then((bubbleObj) => {
             updateIndexDbCountry(bubbleObj);
@@ -136,6 +135,8 @@ function pickDataSet(options = {}) {
       });
   });
 }
+
+
 
 /**
  * Provide each instance with index step to sync if demanded.
@@ -214,7 +215,7 @@ function pickDataSetAsPackage(options = {}) {
           endPoint: frauEP.PublicPower,
         })
           .then((bubbleObj) => {
-            const restructBubbleObj = restructData(bubbleObj);
+            const restructBubbleObj = adaptDataColHeader(bubbleObj);
             return restructBubbleObj;
           })
           .then((bubbleObj) => {
