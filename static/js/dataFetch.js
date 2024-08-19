@@ -150,7 +150,6 @@ async function postData(options = {}) {
         "Content-Type": "application/json",
       },
     });
-
     if (!response.ok)
       throw "No data for ".concat(countryCodes[options.country], " ", year); // catch
     return await response.json();
@@ -161,27 +160,30 @@ async function postData(options = {}) {
 
 /**
  * Construct the object for IndexDb feed.
+ * Proxy XHR returns {data: json}, one more "data" key
  * @param {string} options.country country code
  * @param {string} options.start start date in DB
  * @param {string} options.data JSON data from API
  * @returns {Object} JSON data and meta data
  */
 function prepIndexedDbStorage(options = {}) {
+  let data = options.data;
+  if (Object.keys(data)[0] === "data") data = options.data.data;
   return {
     objectStoreName: "production_types",
     country: options.country, // idb db name
     year: options.start.substring(0, 4), // objStore key name
-    json: options.data, // JSON response object
+    json: data, // JSON response object
   };
 }
 
 /**
  * Adapt the API data to browser IndexedDb column names.
+ * Get rid of obj.name and obj.data key names (original db table col remnants)
  * @param {Object} bubbleObj JSON and meta data
  * @returns {Object} JSON data and meta data
  */
 function adaptDataColHeader(bubbleObj) {
-  // get rid of obj.name and obj.data key names (original db table col remnants)
   const prodTypes = bubbleObj.json.production_types.reduce((acc, type) => {
     // {Biomass: [1,2,3], Hydro: [1,2,3], Fossil_gas:...}
     // IndexedDB of browser is a spoiled princess, empty or hyphen or forward slash, indecies pb

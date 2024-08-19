@@ -21,8 +21,6 @@ function runShow(options = {}) {
     call: () => dataCall.get(),
   });
 
-  // console.log("dataobj->",countryCodes[countryCode], year, dataobj)
-
   frameControl[countryCode + year] = {};
   frameControl[countryCode + year]["idxStep"] = 1; // germany has 4 updates per hour
   frameControl[countryCode + year]["fps"] = 30; // currently overwritten in animationframe
@@ -51,17 +49,16 @@ function runShow(options = {}) {
 }
 
 /**
- * Request the DB data via browser, as extension.
- * GET request directly to 3rd party API.
- * So no CORS problems here. NodeJS will suffer from CORS.
- * Check our local DB if data already exists.
+ * Checks our local DB if data already exists.
+ * GET request the Fraunhofer API data via browser, as extension.
+ * POST request the local express API data, as node.js package.
  * @param {Object} options options = {}
  * @param {string} options.cCode country code
  * @param {number} options.year of data set
+ * @param {boolean} options.useProxy node.js express
  * @returns {Promise} true or false if failed
  */
 function pickDataSet(options = {}) {
-  // pull data set and store it in closure, cache 'dataCall.set'.
   const yesterday = getYesterday();
   const yDay = yesterday.day;
   const yMonth = yesterday.month;
@@ -71,6 +68,14 @@ function pickDataSet(options = {}) {
   const start = yNum + dateForm.yearStart;
   let endDate = yNum + dateForm.yearEnd;
 
+  const useProxy = options.useProxy;
+  const urlObj = {
+    country: cCode,
+    start: start,
+    end: endDate,
+    url: fraunhoferApi,
+    endPoint: frauEP.PublicPower,
+  };
   if (thisYear == yNum) endDate = yNum + "-" + yMonth + "-" + yDay; // "-12-31"
 
   return new Promise((resolve, reject) => {
@@ -79,6 +84,7 @@ function pickDataSet(options = {}) {
       dbVersion: 1,
       objectStoreName: "production_types",
       id: yNum,
+      // pull data set and store it in closure, cache 'dataCall.set'.
       callback: (data) => dataCall.set(data, cCode, yNum),
     })
       .then(() => {
@@ -93,16 +99,11 @@ function pickDataSet(options = {}) {
       })
       .catch(() => {
         // data not in local store yet
-        getData({
-          country: cCode,
-          start: start,
-          end: endDate,
-          url: fraunhoferApi,
-          endPoint: frauEP.PublicPower,
-        })
+        let askUrl = getData(urlObj);
+        if (useProxy === "true") askUrl = postData(urlObj);
+        askUrl
           .then((data) => {
-            const unAvailable = undefined;
-            if (data === unAvailable) throw " No data. ".concat(countryCodes[country])
+            if (data === undefined) throw " No data. ".concat(countryCodes[country])
             return prepIndexedDbStorage({
               country: cCode,
               start: start,
@@ -136,8 +137,6 @@ function pickDataSet(options = {}) {
   });
 }
 
-
-
 /**
  * Provide each instance with index step to sync if demanded.
  * How many steps to skip to get only full hours displayed.
@@ -163,81 +162,4 @@ function getIndexStepHourly(options = {}) {
     if (isoMinute > 0) count += 1;
   });
   return idxStep;
-}
-
-/**
- * NPM package version goes here.
- * POST request to local proxy.
- * HTML page contains true for useProxy.
- * '<div id="useProxy" data-value="true"></div>'
- * @param {Object} options options = {}
- * @param {string} options.cCode country code
- * @param {number} options.year of data set
- * @returns {Promise} true or false if failed
- */
-function pickDataSetAsPackage(options = {}) {
-  // npm package
-  const yesterday = getYesterday();
-  const yDay = yesterday.day;
-  const yMonth = yesterday.month;
-  const thisYear = new Date().getFullYear();
-  const cCode = options.cCode;
-  const yNum = options.year;
-  const start = yNum + dateForm.yearStart;
-  let endDate = yNum + dateForm.yearEnd;
-
-  if (thisYear == yNum) endDate = yNum + "-" + yMonth + "-" + yDay; // "-12-31"
-
-  return new Promise((resolve, reject) => {
-    getIdbValue({
-      dbName: cCode,
-      dbVersion: 1,
-      objectStoreName: "production_types",
-      id: yNum,
-      callback: (data) => dataCall.set(data, cCode, yNum),
-    })
-      .then(() => {
-        const forceRemote = document.getElementById(cCode + "::" + yNum).dataset
-          .value;
-        if (thisYear == yNum && forceRemote === "true")
-          throw "force update data";
-        // data already in local store
-        runShow({ cCode: cCode, year: yNum });
-        resolve(true);
-      })
-      .catch(() => {
-        // data not local avail., -> go to proxy (express server that called index.html)
-        postData({
-          country: cCode,
-          start: start,
-          end: endDate,
-          url: fraunhoferApi,
-          endPoint: frauEP.PublicPower,
-        })
-          .then((bubbleObj) => {
-            const restructBubbleObj = adaptDataColHeader(bubbleObj);
-            return restructBubbleObj;
-          })
-          .then((bubbleObj) => {
-            updateIndexDbCountry(bubbleObj);
-            return bubbleObj;
-          })
-          .then(() => {
-            getIdbValue({
-              dbName: cCode,
-              dbVersion: 1,
-              objectStoreName: "production_types",
-              id: yNum,
-              callback: (data) => dataCall.set(data, cCode, yNum),
-            }).then(() => {
-              runShow({ cCode: cCode, year: yNum });
-              resolve(true);
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-            reject(false);
-          });
-      });
-  });
 }

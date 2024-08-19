@@ -42,6 +42,7 @@ console.log("server on " + PORT);
 open("http://localhost:" + PORT);
 
 /**
+ * Express suffers from UND_ERR_CONNECT_TIMEOUT under 5sec.
  * Proxy server for npm package.
  * Browser can not download data itself if page was
  * loaded by us.
@@ -54,7 +55,8 @@ async function proxyGetData(options = {}) {
   try {
     const response = await fetch(options.url);
     if (!response.ok) throw "No data for ".concat(options.url); // catch
-    return await response.json();
+    const json = await response.json();
+    return json;
   } catch (error) {
     console.error(
       "->error ",

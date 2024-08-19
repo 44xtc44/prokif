@@ -4,7 +4,7 @@
 /**
  * Country selector list of stacked div elements.
  * Enables download data sets from JSON API.
- * Foldable list is created dynamically from 
+ * Foldable list is created dynamically from
  * 2015 to current year.
  */
 function createCountrySelectors() {
@@ -44,9 +44,9 @@ function createCountrySelectors() {
 }
 
 /**
- * Sub label gets an listener to 
+ * Sub label gets an listener to
  * download data or pull from local DB.
- * Current year has an extra button to 
+ * Current year has an extra button to
  * fetch the latest data since yesterday.
  * @param {Object} options options = {}
  * @param {Array} options.countrySelector list to push to until maxCountries
@@ -103,7 +103,7 @@ function createSubLabel(options = {}) {
 }
 
 /**
- * Sub label gets an listener to 
+ * Sub label gets an listener to
  * download data or pull from local DB.
  * @param {Object} options options = {}
  * @param {Array} options.countrySelector list to push to until maxCountries
@@ -122,44 +122,26 @@ function subLabelAddListenerPullData(options = {}) {
   const yearCodeEl = options.yearCodeEl;
 
   yearCodeEl.addEventListener("click", () => {
-    // event listener
     if (countrySelector.length >= maxCountries) return;
     if (countrySelector.includes(yearCodeId)) return; // already selected
 
     yearCodeEl.style.backgroundColor = "#6261cc";
     yearCodeEl.style.color = "#ffffff";
-
     yearCodeEl.innerHTML = "<span class='loader'></span>";
-
     const useProxy = document.getElementById("useProxy").dataset.value;
-    if (useProxy === "true") {
-      console.log("pickDataSetAsPacckage ->");
-      // send url as string to node express, get JSON file back
-      pickDataSetAsPackage({
-        cCode: country,
-        year: yNum,
+    // send url as string to node express, get JSON file back
+    pickDataSet({
+      useProxy: useProxy, // bool
+      cCode: country,
+      year: yNum,
+    })
+      .then(() => {
+        countrySelector.push(yearCodeId);
+        yearCodeEl.innerText = "OK - data ".concat(yearCodeId);
       })
-        .then(() => {
-          countrySelector.push(yearCodeId);
-          yearCodeEl.innerText = "OK - data ".concat(yearCodeId);
-        })
-        .catch(() => {
-          yearCodeEl.innerText = "Fail - no data ".concat(yearCodeId);
-        });
-    } else {
-      pickDataSet({
-        // get data via browser extension
-        cCode: country,
-        year: yNum,
-      })
-        .then(() => {
-          countrySelector.push(yearCodeId);
-          yearCodeEl.innerText = "OK - data ".concat(yearCodeId);
-        })
-        .catch(() => {
-          yearCodeEl.innerText = "Fail - no data ".concat(yearCodeId);
-        });
-    }
+      .catch(() => {
+        yearCodeEl.innerText = "Fail - no data ".concat(yearCodeId);
+      });
   });
 }
 
