@@ -116,7 +116,6 @@ selectRun.js
 ----------------------------
 .. js:autofunction:: runShow
 .. js:autofunction:: pickDataSet
-.. js:autofunction:: pickDataSetAsPackage
 .. js:autofunction:: getIndexStepHourly
 
 setEventListener.js
